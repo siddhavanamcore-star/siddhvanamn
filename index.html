@@ -1,197 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siddha Vanam - Jivant AI Core</title>
+    <title>Jivant AI Core Engine</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #050505; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; position: relative; }
-        .video-bg { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -2; transform: translateX(-50%) translateY(-50%); object-fit: cover; opacity: 0.15; pointer-events: none; }
-        .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(5,5,5,0.5), #050505); z-index: -1; pointer-events: none; }
-        header { border-bottom: 1px solid rgba(26, 26, 26, 0.5); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(13, 13, 13, 0.75); backdrop-filter: blur(15px); }
-        .brand { font-weight: bold; letter-spacing: 2px; color: #d4af37; }
-        .portal-status { font-size: 0.85rem; color: #888; border: 1px solid #333; padding: 5px 15px; border-radius: 4px; background: rgba(0,0,0,0.5); }
-        .main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
-        .title { font-size: 2.4rem; color: #ffffff; margin-bottom: 35px; letter-spacing: 1px; margin-top: 20px; }
-        .title span { color: #d4af37; text-shadow: 0 0 15px rgba(214,175,55,0.3); }
-        .panel { background: rgba(15, 15, 15, 0.8); border: 1px solid rgba(28, 28, 28, 0.6); border-radius: 8px; padding: 40px; width: 100%; max-width: 700px; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin-bottom: 40px; backdrop-filter: blur(10px); }
-        .form-group { margin-bottom: 25px; text-align: left; }
-        label { display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 8px; letter-spacing: 1px; font-weight: 600; }
-        input[type="text"], textarea, select { width: 100%; background: rgba(18, 18, 18, 0.9); border: 1px solid #2a2a2a; padding: 12px 15px; color: #fff; border-radius: 4px; font-size: 0.95rem; transition: all 0.3s ease; }
-        input[type="text"]:focus, textarea:focus, select:focus { border-color: #d4af37; box-shadow: 0 0 8px rgba(214,175,55,0.2); outline: none; }
-        textarea { resize: none; height: 90px; }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .instruction-note { margin-top: 8px; font-size: 0.8rem; color: #d4af37; font-style: italic; opacity: 0.85; line-height: 1.4; }
-        .btn { width: 100%; background: #d4af37; color: #0a0a0a; border: none; padding: 15px; font-size: 1rem; font-weight: bold; border-radius: 4px; cursor: pointer; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(214,175,55,0.2); }
-        .btn:hover { background: #f1c40f; box-shadow: 0 6px 20px rgba(214,175,55,0.4); }
-        .console-output { margin-top: 30px; background: #050505; border: 1px solid #1a1a1a; border-radius: 4px; padding: 15px; text-align: left; font-family: monospace; font-size: 0.85rem; color: #00ff00; display: none; line-height: 1.6; max-height: 150px; overflow-y: auto; }
-        .pricing-section { width: 100%; max-width: 700px; background: rgba(13, 13, 13, 0.8); border: 1px dashed rgba(212, 175, 55, 0.3); border-radius: 8px; padding: 25px; text-align: left; backdrop-filter: blur(10px); }
-        .pricing-title { color: #d4af37; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; font-weight: 600; border-bottom: 1px solid #1c1c1c; padding-bottom: 8px; }
-        .price-card { display: flex; justify-content: space-between; align-items: center; background: rgba(20, 20, 20, 0.8); padding: 15px; border-radius: 4px; margin-bottom: 12px; border: 1px solid #222; }
-        .price-info h4 { color: #fff; font-size: 0.95rem; margin-bottom: 4px; }
-        .price-info p { color: #777; font-size: 0.8rem; }
-        .buy-btn { background: transparent; color: #d4af37; border: 1px solid #d4af37; padding: 8px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; }
-        .buy-btn:hover { background: #d4af37; color: #0a0a0a; }
-        .chatbot-launcher { position: fixed; bottom: 30px; right: 30px; background: #d4af37; color: #0a0a0a; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; box-shadow: 0 4px 15px rgba(214,175,55,0.4); z-index: 1000; transition: all 0.3s ease; }
-        .chatbot-launcher:hover { transform: scale(1.05); background: #f1c40f; }
-        .chatbot-window { position: fixed; bottom: 105px; right: 30px; width: 350px; height: 430px; background: rgba(15, 15, 15, 0.95); border: 1px solid #d4af37; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 1000; display: none; backdrop-filter: blur(10px); }
-        .chatbot-header { background: #0d0d0d; border-bottom: 1px solid #222; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        .chatbot-header h3 { color: #d4af37; font-size: 0.95rem; letter-spacing: 1px; }
-        .close-chat { color: #888; cursor: pointer; font-size: 1.1rem; }
-        .close-chat:hover { color: #fff; }
-        .chatbot-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; text-align: left; }
-        .msg { max-width: 85%; padding: 10px 12px; border-radius: 4px; line-height: 1.4; }
-        .msg.bot { background: #1a1a1a; color: #e0e0e0; align-self: flex-start; border-left: 2px solid #d4af37; }
-        .msg.user { background: #d4af37; color: #0a0a0a; align-self: flex-end; font-weight: 500; }
-        .chatbot-options { padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .opt-btn { background: rgba(214,175,55,0.1); color: #d4af37; border: 1px solid rgba(214,175,55,0.3); padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; }
-        .opt-btn:hover { background: #d4af37; color: #0a0a0a; }
-        footer { border-top: 1px solid #1a1a1a; padding: 15px 40px; display: flex; justify-content: space-between; font-size: 0.8rem; color: #555; background: #0d0d0d; }
+        body { background: #050505; color: #d4af37; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
+        .portal { max-width: 800px; margin: auto; border: 1px solid #333; padding: 30px; border-radius: 8px; background: #0a0a0a; }
+        h1 { text-align: center; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; color: #aaa; margin-bottom: 5px; text-transform: uppercase; }
+        select, textarea, input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .row { display: flex; gap: 20px; }
+        /* बटन को व्यवस्थित किया */
+        .action-row { display: flex; gap: 10px; margin-top: 10px; }
+        button { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .btn-main { background: #d4af37; color: #000; }
+        .btn-preview { background: #222; color: #d4af37; border: 1px solid #d4af37; }
+        
+        #progress-bar { width: 100%; height: 10px; background: #222; margin-top: 10px; display: none; }
+        #progress-fill { height: 100%; background: #d4af37; width: 0%; }
+        
+        /* Golden Chatbot */
+        #chat-window { display: none; position: fixed; bottom: 80px; right: 30px; width: 300px; height: 400px; background: #1a1a1a; border: 2px solid #d4af37; border-radius: 10px; flex-direction: column; overflow: hidden; }
+        .chat-header { background: #d4af37; padding: 10px; display: flex; justify-content: space-between; color: #000; font-weight: bold; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; max-width: 85%; }
+        .user { align-self: flex-end; background: #d4af37; color: #000; }
+        .bot { align-self: flex-start; background: #333; color: #fff; }
+        .droid-btn { position: fixed; bottom: 20px; right: 30px; cursor: pointer; font-size: 40px; }
     </style>
 </head>
 <body>
-    <video class="video-bg" autoplay loop muted playsinline poster="bg-fallback.jpg"><source src="bg.mp4" type="video/mp4"></video>
-    <div class="video-overlay"></div>
-    <header><div class="brand">⌂ SIDDHA VANAM CORE</div><div class="portal-status">SOVEREIGN PORTAL: V1.2</div></header>
-    <div class="main-container">
-        <h1 class="title">Jivant AI <span>Visual Engine</span></h1>
-        <div class="panel">
-            <div class="form-group">
-                <label>SELECT SCRIPT SIMULATION ENGINE</label>
-                <select id="simEngine" onchange="updateInstructionNote()">
-                    <option value="Sehaj Stillness Core">Stillness Core (Spontaneous Calm)</option>
-                    <option value="Mysterious Cinematic Core">Cinematic Core (Suspense & Shadow)</option>
-                    <option value="Infinite Energy Flow Core">Energy Core (Cosmic Matrix)</option>
-                </select>
-                <div class="instruction-note" id="instNote">Note: Optimizes frames for deep, meditative stability with zero camera friction.</div>
-            </div>
-            <div class="form-group">
-                <label>CUSTOM COPYRIGHT EMBED (LEAVE BLANK FOR INVISIBLE METADATA)</label>
-                <input type="text" id="copyrightText" placeholder="Type name to overlay on-screen, or leave blank for hidden metadata encryption...">
-            </div>
-            <div class="form-group">
-                <label>ENTER FULL SCRIPT / VISUAL PROMPT</label>
-                <textarea id="prompt" placeholder="Paste your complete script here... System will automatically synchronize voice-over, ambient soundscapes, and render visual sequences accordingly."></textarea>
-            </div>
-            <div class="grid-inputs">
-                <div class="form-group"><label>CAMERA PAN SHIFT</label><input type="text" id="cameraPan" value="0.50"></div>
-                <div class="form-group"><label>AESTHETIC DENSITY</label><input type="text" id="density" value="2.50"></div>
-            </div>
-            <button class="btn" onclick="initiateRender()">INITIATE JIVANT RENDERING</button>
-            <div class="console-output" id="consoleOutput"></div>
-        </div>
-        <div class="pricing-section">
-            <div class="pricing-title">SOVEREIGN LICENSING GATEWAY</div>
-            <div class="price-card">
-                <div class="price-info"><h4>On-Demand Credit Pack</h4><p>Pay-per-frame architecture for independent creators</p></div>
-                <button class="buy-btn">Get Token</button>
-            </div>
-            <div class="price-card">
-                <div class="price-info"><h4>Corporate Node Subscription</h4><p>Unlimited rendering capacity for high-end VFX studios</p></div>
-                <button class="buy-btn">Subscribe</button>
-            </div>
-        </div>
+
+<div class="portal">
+    <h1>JIVANT AI CORE ENGINE</h1>
+    
+    <div class="input-group">
+        <label>LICENSE KEY</label>
+        <input type="text" placeholder="Enter business key...">
     </div>
-    <div class="chatbot-launcher" id="chatLauncher" onclick="toggleChatbot()">✉</div>
-    <div class="chatbot-window" id="chatWindow">
-        <div class="chatbot-header"><h3>Siddha Vanam AI Guide</h3><span class="close-chat" onclick="toggleChatbot()">✕</span></div>
-        <div class="chatbot-messages" id="chatMessages"><div class="msg bot">Greetings! Welcome to Siddha Vanam Core. How can I guide your creative journey today?</div></div>
-        <div class="chatbot-options">
-            <button class="opt-btn" onclick="botRespond('What are Simulation Engines?')">What are Simulation Engines?</button>
-            <button class="opt-btn" onclick="botRespond('How to get a Free Token?')">How to get a Free Token?</button>
-            <button class="opt-btn" onclick="botRespond('How does Copyright work?')">How does Copyright work?</button>
-        </div>
+
+    <div class="input-group">
+        <label>SELECT SCRIPT SIMULATION ENGINE</label>
+        <select><option>Stillness Core (Spontaneous Calm)</option></select>
     </div>
-    <footer><div>WIPEOUT SHADOW PROTOCOL ACTIVE</div><div>© ALL RIGHTS RESERVED</div></footer>
+    
+    <div class="input-group">
+        <label>CUSTOM COPYRIGHT EMBED</label>
+        <input type="text" placeholder="Optional...">
+    </div>
+    
+    <div class="input-group">
+        <label>ENTER FULL SCRIPT / VISUAL PROMPT</label>
+        <textarea rows="4"></textarea>
+    </div><div class="input-group">
+    <label>NATURE DESCRIPTION (SCENE ATMOSPHERE)</label>
+    <textarea rows="2" placeholder="e.g., Mystic forest at dawn, cinematic lighting..."></textarea>
+</div>
 
-    <script>
-        let isRendering = false;
+    <div class="row">
+        <div class="input-group"><label>CAMERA PAN SHIFT</label><input type="number" value="0.50"></div>
+        <div class="input-group"><label>AESTHETIC DENSITY</label><input type="number" value="2.50"></div>
+    </div>
 
-        function toggleChatbot() { 
-            const w = document.getElementById('chatWindow'); 
-            const optionsDiv = document.querySelector('.chatbot-options');
-            
-            if (w.style.display === 'flex') {
-                w.style.display = 'none';
-            } else {
-                w.style.display = 'flex';
-                if (optionsDiv) {
-                    optionsDiv.style.display = 'flex'; // बॉक्स खुलने पर बटन वापस आ जाएंगे
-                }
-            }
-        }
-        
-        function botRespond(q) {
-            const m = document.getElementById('chatMessages'); 
-            m.innerHTML += `<div class="msg user">${q}</div>`; 
-            let r = "";
-            
-            if (q.includes('Simulation')) r = "Our engine offers 3 simulation cores: <strong>Stillness Core</strong> for deep meditative peace, <strong>Cinematic Core</strong> for intense suspense, and <strong>Energy Core</strong> for celestial flows.";
-            else if (q.includes('Free Token')) r = "3 Free Token Nodes are automatically credited to your session upon seamless Google/Account authentication. No credit card required.";
-            else if (q.includes('Copyright')) r = "Licensed users retain 100% full commercial copyright ownership. Invisible ownership data is encrypted directly into file metadata.";
-            
-            // संप्रभु सुधार: क्लिक होते ही नीचे के विकल्प अदृश्य हो जाएंगे
-            const optionsDiv = document.querySelector('.chatbot-options');
-            if (optionsDiv) {
-                optionsDiv.style.display = 'none';
-            }
-            
-            setTimeout(() => { 
-                m.innerHTML += `<div class="msg bot">${r}</div>`; 
-                m.scrollTop = m.scrollHeight; 
-            }, 400);
-        }
+    <div class="input-group"><input type="checkbox"> <label style="display:inline;">ENABLE SIMULATION LOCK</label></div>
+    
+    <div class="action-row">
+        <button class="btn-preview" onclick="previewRender()">5-SEC PREVIEW</button>
+        <button class="btn-main" onclick="startRender()">INITIATE JIVANT RENDERING</button>
+    </div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
 
-        function updateInstructionNote() {
-            const e = document.getElementById('simEngine').value; const n = document.getElementById('instNote');
-            if(e === "Sehaj Stillness Core") n.innerText = "Note: Optimizes frames for deep, meditative stability with zero camera friction.";
-            else if(e === "Mysterious Cinematic Core") n.innerText = "Note: Emphasizes intense contrast, precise shadows, and high-end cinematic suspense cuts.";
-            else if(e === "Infinite Energy Flow Core") n.innerText = "Note: Triggers dynamic particle simulation, celestial geometry, and rapid energy velocity.";
-        }
+    <div class="licensing-section" style="border: 1px dashed #d4af37; padding: 20px; margin-top: 30px;">
+        <h3 style="text-align:center; margin-top:0;">SOVEREIGN LICENSING GATEWAY</h3>
+        <button style="width:100%; padding:10px; background:transparent; color:#d4af37; border:1px solid #d4af37; margin-bottom:10px;">GET ON-DEMAND CREDIT PACK</button>
+        <button style="width:100%; padding:10px; background:transparent; color:#d4af37; border:1px solid #d4af37;">SUBSCRIBE TO CORPORATE NODE</button>
+    </div>
+</div>
 
-        function initiateRender() {
-            if (isRendering) return; 
-            
-            const p = document.getElementById('prompt').value.trim(); const e = document.getElementById('simEngine').value; const c = document.getElementById('copyrightText').value.trim(); const o = document.getElementById('consoleOutput');
-            const btn = document.querySelector('.btn');
-            
-            o.style.display = 'block'; 
-            
-            if(!p) { 
-                o.innerHTML = `<span style="color: #ff3333;">[ERROR] Render aborted. Script prompt cannot be empty. Please enter a valid sequence.</span>`; 
-                return; 
-            }
-            
-            isRendering = true;
-            btn.innerText = "SIMULATING CORE SEQUENCES...";
-            btn.style.opacity = "0.6";
-            btn.style.cursor = "not-allowed";
-            
-            o.innerHTML = `[User Node] Fetching Active Session Profile...<br>`;
-            
-            setTimeout(() => { 
-                o.innerHTML += `[Access Granted] Local session authenticated. Credits remaining: 3.<br>[Audio Engine] Synthesizing Deep Cinematic Male Voice-Over...<br>[Soundscape Engine] Constructing Ambient Music and Sound Effects (SFX)...<br>`; 
-                o.scrollTop = o.scrollHeight; 
-            }, 600);
-            
-            setTimeout(() => { 
-                o.innerHTML += `[Simulation Engine] Locking Core Architecture: <strong>${e}</strong><br>`; 
-                if(c) o.innerHTML += `[Copyright Protocol] Embedding On-Screen Watermark: "${c}"<br>`; 
-                else o.innerHTML += `[Copyright Protocol] Screen Left Pure. Encrypting Invisible Data into METADATA.<br>`; 
-                o.scrollTop = o.scrollHeight; 
-            }, 1400);
-            
-            setTimeout(() => { 
-                o.innerHTML += `<strong>[RESULT]: VIDEO_AND_PICS_RENDERED_SUCCESSFULLY.MP4/.PNG (Unified Workflow Complete)</strong>`; 
-                o.scrollTop = o.scrollHeight; 
-                
-                isRendering = false;
-                btn.innerText = "INITIATE JIVANT RENDERING";
-                btn.style.opacity = "1";
-                btn.style.cursor = "pointer";
-            }, 2200);
-        }
-    </script>
+<div class="droid-btn" onclick="toggleChat()">🤖</div>
+<div id="chat-window">
+    <div class="chat-header">Jivant Droid AI <span onclick="toggleChat()" style="cursor:pointer">✖</span></div>
+    <div class="chat-body" id="chat-body">
+        <div class="msg bot">Hello Creator! How can I assist you?</div>
+        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(1)">1. How to render?</div>
+        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(2)">2. What is Sim Lock?</div>
+        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(3)">3. Preview vs Render?</div>
+    </div>
+</div>
+
+<script>
+    function toggleChat() { 
+        const w = document.getElementById('chat-window'); 
+        w.style.display = (w.style.display === 'flex' ? 'none' : 'flex'); 
+    }
+    function ask(id) {
+        const b = document.getElementById('chat-body');
+        const q = ["How to render?", "What is Sim Lock?", "Preview vs Render?"];
+        const a = ["Click Initiate after setting your parameters.", "Stabilizes the frame math.", "Preview renders 5 seconds for quality check; Render processes the full script."];
+        b.innerHTML += `<div class="msg user">${q[id-1]}</div><div class="msg bot">${a[id-1]}</div>`;
+        b.scrollTop = b.scrollHeight;
+    }
+    function previewRender() { alert("Preview mode: Rendering 5-second sample..."); }
+    function startRender() {
+        document.getElementById('progress-bar').style.display = 'block';
+        let f = document.getElementById('progress-fill');
+        let w = 0;
+        let i = setInterval(() => {
+            if (w >= 100) clearInterval(i);
+            else { w++; f.style.width = w + '%'; }
+        }, 30);
+    }
+</script>
+
 </body>
 </html>
