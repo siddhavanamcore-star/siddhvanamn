@@ -1,117 +1,1814 @@
+```html
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <title>Jivant AI Core Engine</title>
-    <style>
-        body { background: #050505; color: #d4af37; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
-        .portal { max-width: 800px; margin: auto; border: 1px solid #333; padding: 30px; border-radius: 8px; background: #0a0a0a; }
-        h1 { text-align: center; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; color: #aaa; margin-bottom: 5px; text-transform: uppercase; }
-        select, textarea, input { width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        .row { display: flex; gap: 20px; }
-        /* बटन को व्यवस्थित किया */
-        .action-row { display: flex; gap: 10px; margin-top: 10px; }
-        button { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        .btn-main { background: #d4af37; color: #000; }
-        .btn-preview { background: #222; color: #d4af37; border: 1px solid #d4af37; }
-        
-        #progress-bar { width: 100%; height: 10px; background: #222; margin-top: 10px; display: none; }
-        #progress-fill { height: 100%; background: #d4af37; width: 0%; }
-        
-        /* Golden Chatbot */
-        #chat-window { display: none; position: fixed; bottom: 80px; right: 30px; width: 300px; height: 400px; background: #1a1a1a; border: 2px solid #d4af37; border-radius: 10px; flex-direction: column; overflow: hidden; }
-        .chat-header { background: #d4af37; padding: 10px; display: flex; justify-content: space-between; color: #000; font-weight: bold; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; max-width: 85%; }
-        .user { align-self: flex-end; background: #d4af37; color: #000; }
-        .bot { align-self: flex-start; background: #333; color: #fff; }
-        .droid-btn { position: fixed; bottom: 20px; right: 30px; cursor: pointer; font-size: 40px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Siddha-Vanam — Sovereign Video Engine</title>
+
+<style>
+:root{
+    --bg:#030507;
+    --panel:#080c10;
+    --panel2:#0c1117;
+    --gold:#d6a83a;
+    --gold2:#ffd86a;
+    --goldGlow:rgba(214,168,58,.22);
+    --text:#f2f3f5;
+    --muted:#7f8995;
+    --line:rgba(255,255,255,.08);
+    --green:#35d58a;
+    --red:#ff5d5d;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 70% 20%,rgba(214,168,58,.07),transparent 30%),
+        radial-gradient(circle at 20% 80%,rgba(70,100,140,.07),transparent 30%),
+        var(--bg);
+    overflow-x:hidden;
+}
+
+/* BACKGROUND ENERGY */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:-50%;
+    pointer-events:none;
+    background:
+        repeating-radial-gradient(
+            circle,
+            transparent 0,
+            transparent 100px,
+            rgba(214,168,58,.018) 101px,
+            transparent 103px
+        );
+    animation:rotateField 90s linear infinite;
+}
+
+@keyframes rotateField{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+/* APP */
+
+.app{
+    position:relative;
+    z-index:2;
+    width:min(1600px,96vw);
+    min-height:94vh;
+    margin:3vh auto;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:rgba(5,8,11,.91);
+    backdrop-filter:blur(20px);
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.75),
+        inset 0 1px rgba(255,255,255,.03);
+    overflow:hidden;
+}
+
+/* HEADER */
+
+.header{
+    height:88px;
+    padding:0 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo{
+    width:50px;
+    height:50px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--gold2);
+    font-size:24px;
+    box-shadow:0 0 25px var(--goldGlow);
+}
+
+.brand h1{
+    font-family:Georgia,serif;
+    font-size:20px;
+    letter-spacing:3px;
+    color:var(--gold2);
+}
+
+.brand p{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:10px;
+    letter-spacing:2px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.status{
+    padding:9px 15px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--green);
+    font-size:12px;
+    background:#07100c;
+}
+
+.status-dot{
+    display:inline-block;
+    width:8px;
+    height:8px;
+    margin-right:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+}
+
+.token{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#080c10;
+}
+
+.token span{
+    font-size:11px;
+    color:var(--gold);
+}
+
+.token input{
+    width:130px;
+    border:0;
+    outline:0;
+    color:var(--text);
+    background:transparent;
+}
+
+/* LAYOUT */
+
+.main{
+    display:grid;
+    grid-template-columns:245px 1fr 1.25fr;
+    min-height:calc(94vh - 88px);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    padding:22px 15px;
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+}
+
+.nav-item{
+    padding:14px 16px;
+    margin-bottom:5px;
+    border-radius:10px;
+    color:#8c949e;
+    cursor:pointer;
+    font-size:13px;
+    transition:.25s;
+}
+
+.nav-item:hover,
+.nav-item.active{
+    color:var(--gold2);
+    background:linear-gradient(90deg,rgba(214,168,58,.12),transparent);
+    border-left:2px solid var(--gold);
+}
+
+.field{
+    margin-top:auto;
+    padding:25px 10px;
+    text-align:center;
+    color:var(--gold);
+    border-top:1px solid var(--line);
+}
+
+.field .symbol{
+    font-size:38px;
+    text-shadow:0 0 25px var(--gold);
+}
+
+.field strong{
+    display:block;
+    margin-top:10px;
+    letter-spacing:3px;
+    font-size:12px;
+}
+
+.field small{
+    color:var(--muted);
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+/* LEFT WORKSPACE */
+
+.workspace{
+    padding:24px;
+    border-right:1px solid var(--line);
+    overflow:auto;
+}
+
+.section{
+    margin-bottom:18px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:9px;
+    color:var(--gold2);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+textarea{
+    width:100%;
+    min-height:145px;
+    resize:vertical;
+    padding:16px;
+    color:var(--text);
+    background:#05080b;
+    border:1px solid var(--line);
+    border-radius:12px;
+    outline:none;
+    font-size:14px;
+    line-height:1.6;
+    transition:.25s;
+}
+
+textarea:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 25px rgba(214,168,58,.08);
+}
+
+.counter{
+    text-align:right;
+    color:var(--muted);
+    font-size:10px;
+    margin-top:5px;
+}
+
+/* UPLOAD */
+
+.upload{
+    position:relative;
+    min-height:115px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.upload-box{
+    min-height:115px;
+    border:1px dashed rgba(214,168,58,.35);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:8px;
+    cursor:pointer;
+    background:#06090c;
+    color:var(--muted);
+    transition:.25s;
+    overflow:hidden;
+}
+
+.upload-box:hover{
+    border-color:var(--gold);
+    color:var(--gold2);
+}
+
+.upload-box input{
+    display:none;
+}
+
+.preview-image{
+    width:100%;
+    height:115px;
+    object-fit:cover;
+    display:none;
+}
+
+/* LOCK */
+
+.lock{
+    padding:15px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#070b0f;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+}
+
+.lock.active{
+    border-color:rgba(53,213,138,.5);
+    background:rgba(53,213,138,.04);
+}
+
+.lock-title{
+    color:var(--text);
+    font-size:13px;
+}
+
+.lock-desc{
+    color:var(--muted);
+    font-size:10px;
+    margin-top:4px;
+}
+
+.switch{
+    width:46px;
+    height:25px;
+    padding:3px;
+    border-radius:30px;
+    background:#252a30;
+}
+
+.switch::after{
+    content:"";
+    display:block;
+    width:19px;
+    height:19px;
+    border-radius:50%;
+    background:#777;
+    transition:.25s;
+}
+
+.lock.active .switch{
+    background:rgba(53,213,138,.2);
+}
+
+.lock.active .switch::after{
+    transform:translateX(21px);
+    background:var(--green);
+    box-shadow:0 0 12px var(--green);
+}
+
+/* CONTROL GRID */
+
+.controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.control{
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    background:#070b0f;
+}
+
+.control label{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    letter-spacing:1px;
+    margin-bottom:8px;
+    text-transform:uppercase;
+}
+
+select{
+    width:100%;
+    padding:8px;
+    border:0;
+    outline:0;
+    border-radius:7px;
+    color:var(--text);
+    background:#11161c;
+    font-size:11px;
+}
+
+/* DURATION */
+
+.pills{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.pill{
+    flex:1;
+    min-width:70px;
+    padding:10px 7px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--muted);
+    background:#080c10;
+    cursor:pointer;
+    font-size:10px;
+    transition:.2s;
+}
+
+.pill:hover{
+    border-color:var(--gold);
+}
+
+.pill.active{
+    color:#090909;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    border-color:var(--gold2);
+    font-weight:bold;
+    box-shadow:0 0 18px var(--goldGlow);
+}
+
+/* RIGHT PREVIEW */
+
+.preview-panel{
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+}
+
+.preview-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.preview-title{
+    color:var(--gold2);
+    font-size:12px;
+    letter-spacing:1.5px;
+}
+
+.meta{
+    display:flex;
+    gap:6px;
+}
+
+.meta span{
+    padding:5px 8px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--muted);
+    font-size:9px;
+}
+
+/* VIDEO */
+
+.video-frame{
+    position:relative;
+    min-height:390px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at center,rgba(214,168,58,.06),transparent 35%),
+        #020304;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.video-frame video{
+    width:100%;
+    height:100%;
+    max-height:430px;
+    object-fit:contain;
+    display:none;
+}
+
+.empty-preview{
+    text-align:center;
+    color:var(--muted);
+}
+
+.empty-symbol{
+    font-size:58px;
+    color:var(--gold);
+    opacity:.25;
+    margin-bottom:12px;
+}
+
+.empty-preview strong{
+    display:block;
+    color:#b4bbc4;
+    font-size:13px;
+}
+
+.empty-preview span{
+    display:block;
+    margin-top:6px;
+    font-size:10px;
+}
+
+/* PLAYBACK */
+
+.playback{
+    display:none;
+    padding:8px;
+    border:1px solid var(--line);
+    border-top:0;
+    background:#070a0d;
+}
+
+.playback button{
+    background:none;
+    border:0;
+    color:var(--text);
+    cursor:pointer;
+    margin-right:10px;
+}
+
+/* PIPELINE */
+
+.pipeline{
+    margin-top:14px;
+    padding:15px;
+    border:1px solid var(--line);
+    border-radius:13px;
+    background:#070a0e;
+}
+
+.pipeline-title{
+    color:var(--gold2);
+    font-size:11px;
+    letter-spacing:1px;
+    margin-bottom:12px;
+}
+
+.steps{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.step{
+    text-align:center;
+    color:#454d56;
+    font-size:8px;
+    line-height:1.4;
+}
+
+.step .circle{
+    width:15px;
+    height:15px;
+    margin:0 auto 6px;
+    border:1px solid #343b43;
+    border-radius:50%;
+}
+
+.step.done{
+    color:var(--green);
+}
+
+.step.done .circle{
+    background:var(--green);
+    border-color:var(--green);
+    box-shadow:0 0 10px rgba(53,213,138,.5);
+}
+
+.step.running{
+    color:var(--gold2);
+}
+
+.step.running .circle{
+    background:var(--gold);
+    border-color:var(--gold);
+    box-shadow:0 0 15px var(--gold);
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    50%{transform:scale(1.25)}
+}
+
+/* BOTTOM ACTIONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 160px;
+    gap:10px;
+    margin-top:14px;
+}
+
+.generate{
+    border:1px solid var(--gold);
+    border-radius:12px;
+    padding:17px;
+    cursor:pointer;
+    color:#090909;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:2px;
+    box-shadow:0 0 25px var(--goldGlow);
+    transition:.25s;
+}
+
+.generate:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 35px rgba(214,168,58,.3);
+}
+
+.generate:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.reset{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#090d11;
+    color:#9aa2ab;
+    cursor:pointer;
+}
+
+.download{
+    display:none;
+    margin-top:10px;
+    text-align:center;
+    padding:12px;
+    border:1px solid rgba(53,213,138,.35);
+    border-radius:10px;
+    color:var(--green);
+    text-decoration:none;
+    background:rgba(53,213,138,.04);
+    font-size:11px;
+}
+
+/* STATUS */
+
+.status-log{
+    margin-top:9px;
+    text-align:center;
+    color:var(--muted);
+    font-size:10px;
+    min-height:16px;
+}
+
+/* FOOTER */
+
+.footer{
+    text-align:center;
+    padding:12px;
+    border-top:1px solid var(--line);
+    color:#65552e;
+    font-size:9px;
+    letter-spacing:3px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1200px){
+    .main{
+        grid-template-columns:190px 1fr;
+    }
+
+    .preview-panel{
+        grid-column:2;
+        border-top:1px solid var(--line);
+    }
+
+    .sidebar{
+        grid-row:span 2;
+    }
+}
+
+@media(max-width:800px){
+    .app{
+        width:100%;
+        margin:0;
+        border-radius:0;
+    }
+
+    .header{
+        height:auto;
+        padding:16px;
+        gap:15px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .header-right{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .main{
+        display:block;
+    }
+
+    .sidebar{
+        display:none;
+    }
+
+    .workspace{
+        border-right:0;
+    }
+
+    .preview-panel{
+        border-top:1px solid var(--line);
+    }
+
+    .steps{
+        grid-template-columns:repeat(4,1fr);
+        row-gap:12px;
+    }
+
+    .video-frame{
+        min-height:250px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<div class="portal">
-    <h1>JIVANT AI CORE ENGINE</h1>
-    
-    <div class="input-group">
-        <label>LICENSE KEY</label>
-        <input type="text" placeholder="Enter business key...">
+<div class="app">
+
+<!-- HEADER -->
+<header class="header">
+
+    <div class="brand">
+        <div class="logo">✦</div>
+
+        <div>
+            <h1>SIDDHA-VANAM</h1>
+            <p>SOVEREIGN VIDEO ENGINE · CINEMATIC MANIFESTATION</p>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>SELECT SCRIPT SIMULATION ENGINE</label>
-        <select><option>Stillness Core (Spontaneous Calm)</option></select>
+    <div class="header-right">
+
+        <div class="status">
+            <span class="status-dot"></span>
+            ENGINE ONLINE
+        </div>
+
+        <div class="token">
+            <span>🔐 TOKEN</span>
+            <input
+                type="text"
+                id="authTokenInput"
+                value="SiddhaVanam777"
+            >
+        </div>
+
     </div>
-    
-    <div class="input-group">
-        <label>CUSTOM COPYRIGHT EMBED</label>
-        <input type="text" placeholder="Optional...">
+
+</header>
+
+
+<div class="main">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="nav-item active">◈ &nbsp; STUDIO</div>
+    <div class="nav-item">▣ &nbsp; PROJECTS</div>
+    <div class="nav-item">◷ &nbsp; HISTORY</div>
+    <div class="nav-item">☆ &nbsp; PRESETS</div>
+    <div class="nav-item">⚙ &nbsp; ENGINE</div>
+    <div class="nav-item">◉ &nbsp; SETTINGS</div>
+    <div class="nav-item">ⓘ &nbsp; ABOUT</div>
+
+    <div class="field">
+        <div class="symbol">ॐ</div>
+        <strong>520Hz</strong>
+        <small>RESONANCE FIELD</small>
     </div>
-    
-    <div class="input-group">
-        <label>ENTER FULL SCRIPT / VISUAL PROMPT</label>
-        <textarea rows="4"></textarea>
-    </div><div class="input-group">
-    <label>NATURE DESCRIPTION (SCENE ATMOSPHERE)</label>
-    <textarea rows="2" placeholder="e.g., Mystic forest at dawn, cinematic lighting..."></textarea>
+
+</aside>
+
+
+<!-- WORKSPACE -->
+
+<section class="workspace">
+
+    <!-- SCRIPT -->
+
+    <div class="section">
+
+        <div class="section-title">
+            ◈ SCRIPT / VISION
+        </div>
+
+        <textarea
+            id="scriptInput"
+            maxlength="2000"
+            placeholder="अपना दृश्य, कथा या cinematic vision यहाँ लिखें...
+
+उदाहरण:
+घने प्राचीन अरण्य में आधी रात का समय है। दूर एक प्राचीन मंदिर दिखाई देता है। वर्षा की बूंदें पत्थरों पर गिर रही हैं और मंदिर के भीतर से सुनहरी ऊर्जा की धीमी रोशनी बाहर आ रही है..."
+        ></textarea>
+
+        <div class="counter">
+            <span id="charCount">0</span> / 2000
+        </div>
+
+    </div>
+
+
+    <!-- REFERENCE IMAGE -->
+
+    <div class="section">
+
+        <div class="section-title">
+            ◈ REFERENCE IMAGE
+        </div>
+
+        <div class="upload">
+
+            <label class="upload-box">
+
+                <input
+                    type="file"
+                    id="imageFileInput"
+                    accept="image/*"
+                >
+
+                <img
+                    id="imagePreview"
+                    class="preview-image"
+                >
+
+                <span id="uploadText">
+                    ⬆<br>
+                    REFERENCE IMAGE<br>
+                    <small>JPG · PNG · WEBP</small>
+                </span>
+
+            </label>
+
+            <div
+                class="upload-box"
+                onclick="clearImage()"
+            >
+                <span>✕</span>
+                <small>REMOVE / RESET IMAGE</small>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SIMULATION LOCK -->
+
+    <div class="section">
+
+        <div
+            class="lock"
+            id="simLock"
+            onclick="toggleSimulationLock()"
+        >
+
+            <div>
+                <div class="lock-title">
+                    🔒 SIMULATION LOCK
+                </div>
+
+                <div class="lock-desc">
+                    Character · Environment · Lighting · Mood consistency
+                </div>
+            </div>
+
+            <div class="switch"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DURATION -->
+
+    <div class="section">
+
+        <div class="section-title">
+            ◈ DURATION
+        </div>
+
+        <div class="pills" id="durationDeck">
+
+            <button class="pill active"
+                onclick="selectDuration(this,'5')">
+                5 SEC
+            </button>
+
+            <button class="pill"
+                onclick="selectDuration(this,'15')">
+                15 SEC
+            </button>
+
+            <button class="pill"
+                onclick="selectDuration(this,'30')">
+                30 SEC
+            </button>
+
+            <button class="pill"
+                onclick="selectDuration(this,'60')">
+                1 MIN
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="section">
+
+        <div class="section-title">
+            ◈ CINEMATIC PARAMETERS
+        </div>
+
+        <div class="controls">
+
+            <div class="control">
+                <label>Camera Motion</label>
+
+                <select id="cameraSelect">
+                    <option value="Front_Closeup">
+                        Front Close-up
+                    </option>
+
+                    <option value="Slow_Cinematic_Parallax">
+                        Slow Cinematic Parallax
+                    </option>
+
+                    <option value="Top_Geometric_Axis">
+                        Top Down
+                    </option>
+
+                    <option value="Pan_Left_Right">
+                        Pan Left → Right
+                    </option>
+
+                    <option value="Absolute_Stillness">
+                        Absolute Stillness
+                    </option>
+                </select>
+            </div>
+
+
+            <div class="control">
+                <label>Visual Style</label>
+
+                <select id="styleSelect">
+                    <option value="Epic_Cinematic">
+                        Epic Cinematic
+                    </option>
+
+                    <option value="Realistic">
+                        Photorealistic
+                    </option>
+
+                    <option value="Mystic">
+                        Mystic
+                    </option>
+
+                    <option value="Dark_Mystery">
+                        Dark Mystery
+                    </option>
+
+                    <option value="Fantasy">
+                        Fantasy
+                    </option>
+                </select>
+            </div>
+
+
+            <div class="control">
+                <label>Color Grade</label>
+
+                <select id="gradingSelect">
+
+                    <option value="Ancient_Siddha">
+                        Ancient Siddha
+                    </option>
+
+                    <option value="Epic_Cinematic">
+                        Epic Cinematic
+                    </option>
+
+                    <option value="Cyberpunk_Neon">
+                        Cyberpunk Neon
+                    </option>
+
+                    <option value="Dark_Occult">
+                        Dark Occult
+                    </option>
+
+                    <option value="Natural">
+                        Natural
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="control">
+
+                <label>Aspect Ratio</label>
+
+                <select id="ratioSelect">
+
+                    <option value="16:9">
+                        16:9 · YouTube
+                    </option>
+
+                    <option value="9:16">
+                        9:16 · Shorts
+                    </option>
+
+                    <option value="1:1">
+                        1:1 · Square
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="control">
+
+                <label>Resolution</label>
+
+                <select id="resolutionSelect">
+
+                    <option value="1080p">
+                        1080p · Full HD
+                    </option>
+
+                    <option value="720p">
+                        720p
+                    </option>
+
+                    <option value="4K">
+                        4K · Ultra
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="control">
+
+                <label>Frame Rate</label>
+
+                <select id="fpsSelect">
+
+                    <option value="24">
+                        24 FPS · Cinematic
+                    </option>
+
+                    <option value="30">
+                        30 FPS
+                    </option>
+
+                    <option value="60">
+                        60 FPS
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PREVIEW -->
+
+<section class="preview-panel">
+
+    <div class="preview-header">
+
+        <div class="preview-title">
+            ◈ CINEMATIC PREVIEW
+        </div>
+
+        <div class="meta">
+            <span id="ratioMeta">16:9</span>
+            <span id="resolutionMeta">1080p</span>
+            <span id="fpsMeta">24 FPS</span>
+        </div>
+
+    </div>
+
+
+    <!-- VIDEO VIEWPORT -->
+
+    <div class="video-frame">
+
+        <div
+            class="empty-preview"
+            id="emptyPreview"
+        >
+            <div class="empty-symbol">✦</div>
+
+            <strong>
+                SOVEREIGN RENDER VIEWPORT
+            </strong>
+
+            <span>
+                Your manifested reality will appear here
+            </span>
+        </div>
+
+        <video
+            id="videoOutput"
+            controls
+            playsinline
+        ></video>
+
+    </div>
+
+
+    <!-- PIPELINE -->
+
+    <div class="pipeline">
+
+        <div class="pipeline-title">
+            GENERATION PIPELINE
+        </div>
+
+        <div class="steps">
+
+            <div class="step" id="step1">
+                <div class="circle"></div>
+                ANALYZE<br>SCRIPT
+            </div>
+
+            <div class="step" id="step2">
+                <div class="circle"></div>
+                VISUAL<br>ELEMENTS
+            </div>
+
+            <div class="step" id="step3">
+                <div class="circle"></div>
+                LOCK<br>PARAMETERS
+            </div>
+
+            <div class="step" id="step4">
+                <div class="circle"></div>
+                CAMERA<br>PATH
+            </div>
+
+            <div class="step" id="step5">
+                <div class="circle"></div>
+                MOTION<br>SIMULATION
+            </div>
+
+            <div class="step" id="step6">
+                <div class="circle"></div>
+                VIDEO<br>RENDER
+            </div>
+
+            <div class="step" id="step7">
+                <div class="circle"></div>
+                FINALIZE<br>OUTPUT
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <button
+            class="generate"
+            id="generateBtn"
+            onclick="runGeneration()"
+        >
+            ⚡ MANIFEST VIDEO
+        </button>
+
+        <button
+            class="reset"
+            onclick="resetStudio()"
+        >
+            ↻ RESET ALL
+        </button>
+
+    </div>
+
+
+    <a
+        id="downloadBtn"
+        class="download"
+        download="SiddhaVanam_Render.mp4"
+    >
+        ↓ DOWNLOAD MANIFESTED VIDEO
+    </a>
+
+
+    <div
+        class="status-log"
+        id="statusLog"
+    >
+        SYSTEM READY · AWAITING VISION
+    </div>
+
+</section>
+
 </div>
 
-    <div class="row">
-        <div class="input-group"><label>CAMERA PAN SHIFT</label><input type="number" value="0.50"></div>
-        <div class="input-group"><label>AESTHETIC DENSITY</label><input type="number" value="2.50"></div>
-    </div>
 
-    <div class="input-group"><input type="checkbox"> <label style="display:inline;">ENABLE SIMULATION LOCK</label></div>
-    
-    <div class="action-row">
-        <button class="btn-preview" onclick="previewRender()">5-SEC PREVIEW</button>
-        <button class="btn-main" onclick="startRender()">INITIATE JIVANT RENDERING</button>
-    </div>
-    <div id="progress-bar"><div id="progress-fill"></div></div>
-
-    <div class="licensing-section" style="border: 1px dashed #d4af37; padding: 20px; margin-top: 30px;">
-        <h3 style="text-align:center; margin-top:0;">SOVEREIGN LICENSING GATEWAY</h3>
-        <button style="width:100%; padding:10px; background:transparent; color:#d4af37; border:1px solid #d4af37; margin-bottom:10px;">GET ON-DEMAND CREDIT PACK</button>
-        <button style="width:100%; padding:10px; background:transparent; color:#d4af37; border:1px solid #d4af37;">SUBSCRIBE TO CORPORATE NODE</button>
-    </div>
+<div class="footer">
+    CONSCIOUSNESS IS THE DIRECTOR · INTENTION IS THE SCRIPT · REALITY IS THE RENDER
 </div>
 
-<div class="droid-btn" onclick="toggleChat()">🤖</div>
-<div id="chat-window">
-    <div class="chat-header">Jivant Droid AI <span onclick="toggleChat()" style="cursor:pointer">✖</span></div>
-    <div class="chat-body" id="chat-body">
-        <div class="msg bot">Hello Creator! How can I assist you?</div>
-        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(1)">1. How to render?</div>
-        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(2)">2. What is Sim Lock?</div>
-        <div class="msg bot" style="cursor:pointer; color:#d4af37;" onclick="ask(3)">3. Preview vs Render?</div>
-    </div>
 </div>
+
 
 <script>
-    function toggleChat() { 
-        const w = document.getElementById('chat-window'); 
-        w.style.display = (w.style.display === 'flex' ? 'none' : 'flex'); 
+
+/* =========================
+   APP STATE
+========================= */
+
+const appState = {
+
+    simulationLocked:false,
+
+    duration:"5",
+
+    imageFile:null
+
+};
+
+
+/* =========================
+   SCRIPT COUNTER
+========================= */
+
+const scriptInput =
+    document.getElementById("scriptInput");
+
+scriptInput.addEventListener("input",()=>{
+
+    document.getElementById("charCount")
+        .innerText = scriptInput.value.length;
+
+});
+
+
+/* =========================
+   IMAGE UPLOAD
+========================= */
+
+document
+.getElementById("imageFileInput")
+.addEventListener("change",function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    appState.imageFile = file;
+
+    const preview =
+        document.getElementById("imagePreview");
+
+    preview.src = URL.createObjectURL(file);
+
+    preview.style.display = "block";
+
+    document.getElementById("uploadText")
+        .style.display = "none";
+
+});
+
+
+function clearImage(){
+
+    appState.imageFile = null;
+
+    const input =
+        document.getElementById("imageFileInput");
+
+    input.value = "";
+
+    document.getElementById("imagePreview")
+        .style.display = "none";
+
+    document.getElementById("uploadText")
+        .style.display = "block";
+
+}
+
+
+/* =========================
+   SIMULATION LOCK
+========================= */
+
+function toggleSimulationLock(){
+
+    appState.simulationLocked =
+        !appState.simulationLocked;
+
+    document
+        .getElementById("simLock")
+        .classList.toggle(
+            "active",
+            appState.simulationLocked
+        );
+
+}
+
+
+/* =========================
+   DURATION
+========================= */
+
+function selectDuration(button,value){
+
+    document
+        .querySelectorAll("#durationDeck .pill")
+        .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    appState.duration = value;
+
+}
+
+
+/* =========================
+   META UPDATE
+========================= */
+
+document
+.getElementById("ratioSelect")
+.addEventListener("change",updateMeta);
+
+document
+.getElementById("resolutionSelect")
+.addEventListener("change",updateMeta);
+
+document
+.getElementById("fpsSelect")
+.addEventListener("change",updateMeta);
+
+
+function updateMeta(){
+
+    document.getElementById("ratioMeta")
+        .innerText =
+        document.getElementById("ratioSelect").value;
+
+    document.getElementById("resolutionMeta")
+        .innerText =
+        document.getElementById("resolutionSelect").value;
+
+    document.getElementById("fpsMeta")
+        .innerText =
+        document.getElementById("fpsSelect").value
+        + " FPS";
+
+}
+
+
+/* =========================
+   PIPELINE
+========================= */
+
+function resetPipeline(){
+
+    for(let i=1;i<=7;i++){
+
+        const step =
+            document.getElementById("step"+i);
+
+        step.classList.remove(
+            "done",
+            "running"
+        );
+
     }
-    function ask(id) {
-        const b = document.getElementById('chat-body');
-        const q = ["How to render?", "What is Sim Lock?", "Preview vs Render?"];
-        const a = ["Click Initiate after setting your parameters.", "Stabilizes the frame math.", "Preview renders 5 seconds for quality check; Render processes the full script."];
-        b.innerHTML += `<div class="msg user">${q[id-1]}</div><div class="msg bot">${a[id-1]}</div>`;
-        b.scrollTop = b.scrollHeight;
+
+}
+
+
+function pipelineStep(number){
+
+    for(let i=1;i<number;i++){
+
+        document
+            .getElementById("step"+i)
+            .classList.remove("running");
+
+        document
+            .getElementById("step"+i)
+            .classList.add("done");
+
     }
-    function previewRender() { alert("Preview mode: Rendering 5-second sample..."); }
-    function startRender() {
-        document.getElementById('progress-bar').style.display = 'block';
-        let f = document.getElementById('progress-fill');
-        let w = 0;
-        let i = setInterval(() => {
-            if (w >= 100) clearInterval(i);
-            else { w++; f.style.width = w + '%'; }
-        }, 30);
+
+    document
+        .getElementById("step"+number)
+        .classList.add("running");
+
+}
+
+
+/* =========================
+   MAIN GENERATION
+========================= */
+
+async function runGeneration(){
+
+    const script =
+        scriptInput.value.trim();
+
+    const token =
+        document
+        .getElementById("authTokenInput")
+        .value.trim();
+
+    const button =
+        document.getElementById("generateBtn");
+
+    const status =
+        document.getElementById("statusLog");
+
+    const video =
+        document.getElementById("videoOutput");
+
+    const empty =
+        document.getElementById("emptyPreview");
+
+    const download =
+        document.getElementById("downloadBtn");
+
+
+    if(!script){
+
+        alert(
+            "कृपया पहले Script / Vision दर्ज करें।"
+        );
+
+        return;
+
     }
+
+
+    button.disabled = true;
+
+    button.innerText =
+        "⏳ MANIFESTING REALITY...";
+
+    video.style.display = "none";
+
+    empty.style.display = "block";
+
+    download.style.display = "none";
+
+    resetPipeline();
+
+
+    /* PIPELINE VISUAL */
+
+    pipelineStep(1);
+
+    status.innerText =
+        "SCRIPT ANALYSIS · extracting cinematic intent...";
+
+
+    await delay(450);
+
+    pipelineStep(2);
+
+    status.innerText =
+        "VISUAL EXTRACTION · building scene geometry...";
+
+
+    await delay(450);
+
+    pipelineStep(3);
+
+    status.innerText =
+        "PARAMETER LOCK · synchronizing simulation state...";
+
+
+    await delay(450);
+
+    pipelineStep(4);
+
+    status.innerText =
+        "CAMERA PATH · calculating cinematic movement...";
+
+
+    await delay(450);
+
+    pipelineStep(5);
+
+    status.innerText =
+        "MOTION SIMULATION · preparing render pipeline...";
+
+
+    try{
+
+        const formData =
+            new FormData();
+
+
+        /*
+         * Backend को complete information
+         * भेजी जा रही है।
+         */
+
+        formData.append(
+            "script",
+            script
+        );
+
+        formData.append(
+            "duration",
+            appState.duration
+        );
+
+        formData.append(
+            "camera_angle",
+            document
+                .getElementById("cameraSelect")
+                .value
+        );
+
+        formData.append(
+            "project_type",
+            document
+                .getElementById("styleSelect")
+                .value
+        );
+
+        formData.append(
+            "color_grading",
+            document
+                .getElementById("gradingSelect")
+                .value
+        );
+
+        formData.append(
+            "aspect_ratio",
+            document
+                .getElementById("ratioSelect")
+                .value
+        );
+
+        formData.append(
+            "resolution",
+            document
+                .getElementById("resolutionSelect")
+                .value
+        );
+
+        formData.append(
+            "fps",
+            document
+                .getElementById("fpsSelect")
+                .value
+        );
+
+        formData.append(
+            "simulation_locked",
+            appState.simulationLocked
+        );
+
+
+        if(appState.imageFile){
+
+            formData.append(
+                "reference_image",
+                appState.imageFile
+            );
+
+        }
+
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:8000/api/v1/generate",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "X-Access-Token":token
+                    },
+
+                    body:formData
+                }
+            );
+
+
+        let result;
+
+        try{
+
+            result =
+                await response.json();
+
+        }catch(e){
+
+            throw new Error(
+                "Backend ने valid JSON response नहीं दिया।"
+            );
+
+        }
+
+
+        if(
+            response.ok &&
+            (
+                result.status === "Success" ||
+                result.status === "success"
+            )
+        ){
+
+            pipelineStep(6);
+
+            status.innerText =
+                "VIDEO RENDER COMPLETE · finalizing output...";
+
+
+            await delay(500);
+
+            pipelineStep(7);
+
+            const videoUrl =
+                result.video_url ||
+                result.url ||
+                result.output_url;
+
+
+            if(videoUrl){
+
+                video.src = videoUrl;
+
+                video.style.display = "block";
+
+                empty.style.display = "none";
+
+                download.href = videoUrl;
+
+                download.style.display = "block";
+
+                status.innerText =
+                    "✓ MANIFESTATION COMPLETE · VIDEO READY";
+
+            }else{
+
+                status.innerText =
+                    "✓ Render complete, लेकिन backend ने video URL नहीं भेजा।";
+
+            }
+
+        }else{
+
+            throw new Error(
+                result.detail ||
+                result.message ||
+                "Generation failed."
+            );
+
+        }
+
+
+    }catch(error){
+
+        resetPipeline();
+
+        status.innerText =
+            "⚠ " + error.message;
+
+        console.error(error);
+
+    }finally{
+
+        button.disabled = false;
+
+        button.innerText =
+            "⚡ MANIFEST VIDEO";
+
+    }
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetStudio(){
+
+    scriptInput.value = "";
+
+    document.getElementById("charCount")
+        .innerText = "0";
+
+    clearImage();
+
+    appState.simulationLocked = false;
+
+    document
+        .getElementById("simLock")
+        .classList.remove("active");
+
+    appState.duration = "5";
+
+    document
+        .querySelectorAll("#durationDeck .pill")
+        .forEach((button,index)=>{
+
+            button.classList.toggle(
+                "active",
+                index === 0
+            );
+
+        });
+
+
+    document.getElementById("videoOutput")
+        .style.display = "none";
+
+    document.getElementById("emptyPreview")
+        .style.display = "block";
+
+    document.getElementById("downloadBtn")
+        .style.display = "none";
+
+    document.getElementById("statusLog")
+        .innerText =
+        "SYSTEM READY · AWAITING VISION";
+
+    resetPipeline();
+
+}
+
+
+/* =========================
+   DELAY
+========================= */
+
+function delay(ms){
+
+    return new Promise(
+        resolve=>setTimeout(resolve,ms)
+    );
+
+}
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+updateMeta();
+
 </script>
 
 </body>
 </html>
+```
